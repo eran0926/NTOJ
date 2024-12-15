@@ -2,16 +2,16 @@
 <script>
     function init() {
         {% if not contest.is_start() %}
-            let desc_tex = `{{ markdown_escape(contest.desc_before_contest) }}`;
+        let desc_tex = `{{ markdown_escape(contest.desc_before_contest) }}`;
         {% elif contest.is_running() %}
-            let desc_tex = `{{ markdown_escape(contest.desc_during_contest) }}`;
+        let desc_tex = `{{ markdown_escape(contest.desc_during_contest) }}`;
         {% elif contest.is_end() %}
-            let desc_tex = `{{ markdown_escape(contest.desc_after_contest) }}`;
+        let desc_tex = `{{ markdown_escape(contest.desc_after_contest) }}`;
         {% end %}
 
         let descEle = document.getElementById('desc');
         descEle.innerHTML = DOMPurify.sanitize(marked.parse(index.unescape_html(desc_tex)));
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub, descEle]);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, descEle]);
     }
 </script>
 
@@ -33,9 +33,9 @@
                     <h5>{{ ContestMode(contest.contest_mode).name }}</h5>
 
                     {% if contest.is_public_scoreboard %}
-                        <h5>Scoreboard</h5>
+                    <h5>Scoreboard</h5>
                     {% else %}
-                        <h5>No Scoreboard</h5>
+                    <h5>No Scoreboard</h5>
                     {% end %}
                 </div>
             </div>
@@ -43,14 +43,14 @@
             <div class="card mb-1">
                 <div class="card-header">Registration Before</div>
                 <div class="card-body">
-                    <h5>{{ contest.reg_end.strftime("%Y-%m-%d %H:%M:%S") }}</h5>
-
                     {% if contest.reg_mode is RegMode.INVITED %}
-                        <h5>Invited</h5>
+                    <h5>Invitation Required</h5>
                     {% elif contest.reg_mode is RegMode.FREE_REG %}
-                        <h5>Free Registration, no approval needed</h5>
+                    <h5>{{ contest.reg_end.strftime("%Y-%m-%d %H:%M:%S") }}</h5>
+                    <h5>Free Registration, no approval needed</h5>
                     {% elif contest.reg_mode is RegMode.REG_APPROVAL %}
-                        <h5>Free Registration, approval needed </h5>
+                    <h5>{{ contest.reg_end.strftime("%Y-%m-%d %H:%M:%S") }}</h5>
+                    <h5>Free Registration, approval needed </h5>
                     {% end %}
                 </div>
             </div>
@@ -60,42 +60,43 @@
 
                 <div class="card-body">
                     {% if contest.is_admin(user) %}
-                        <h5>Admin, no registration needed</h5>
+                    <h5>Admin, no registration needed</h5>
                     {% else %}
-                        {% set now = datetime.datetime.now().replace(tzinfo=datetime.timezone(datetime.timedelta(hours=+8))) %}
-                        {% set can_reg = True %}
-                        {% if now >= contest.reg_end %}
-                            {% set can_reg = False %}
-                            <h5>Registration Ended</h5>
-                        {% end %}
+                    {% set now = datetime.datetime.now().replace(tzinfo=datetime.timezone(datetime.timedelta(hours=+8)))
+                    %}
+                    {% set can_reg = True %}
+                    {% if now >= contest.reg_end %}
+                    {% set can_reg = False %}
+                    <h5>Registration Ended</h5>
+                    {% end %}
 
-                        {% if contest.reg_mode is RegMode.INVITED %}
-                            {% if user.acct_id in contest.acct_list %}
-                                <h5>Invited</h5>
-                            {% else %}
-                                <h5>Not Invited</h5>
-                            {% end %}
-                        {% elif contest.reg_mode is RegMode.FREE_REG %}
-                            {% if user.acct_id in contest.acct_list %}
-                                <h5>Registered</h5>
-                            {% else %}
-                                <h5>Not Registered</h5>
-                            {% end %}
-                            {% if can_reg %}
-                                <a href="/oj/contests/{{ contest.contest_id }}/reg/" class="btn btn-primary">Go to Register</a>
-                            {% end %}
-                        {% else %}
-                            {% if user.acct_id in contest.reg_list %}
-                                <h5>Waiting Approval</h5>
-                            {% elif user.acct_id in contest.acct_list %}
-                                <h5>Registered</h5>
-                            {% else %}
-                                <h5>Not Registered</h5>
-                            {% end %}
-                            {% if can_reg %}
-                                <a href="/oj/contests/{{ contest.contest_id }}/reg/" class="btn btn-primary">Go to Register</a>
-                            {% end %}
-                        {% end %}
+                    {% if contest.reg_mode is RegMode.INVITED %}
+                    {% if user.acct_id in contest.acct_list %}
+                    <h5>Invited</h5>
+                    {% else %}
+                    <h5>Not Invited</h5>
+                    {% end %}
+                    {% elif contest.reg_mode is RegMode.FREE_REG %}
+                    {% if user.acct_id in contest.acct_list %}
+                    <h5>Registered</h5>
+                    {% else %}
+                    <h5>Not Registered</h5>
+                    {% end %}
+                    {% if can_reg %}
+                    <a href="/oj/contests/{{ contest.contest_id }}/reg/" class="btn btn-primary">Go to Register</a>
+                    {% end %}
+                    {% else %}
+                    {% if user.acct_id in contest.reg_list %}
+                    <h5>Waiting Approval</h5>
+                    {% elif user.acct_id in contest.acct_list %}
+                    <h5>Registered</h5>
+                    {% else %}
+                    <h5>Not Registered</h5>
+                    {% end %}
+                    {% if can_reg %}
+                    <a href="/oj/contests/{{ contest.contest_id }}/reg/" class="btn btn-primary">Go to Register</a>
+                    {% end %}
+                    {% end %}
                     {% end %}
                 </div>
 
