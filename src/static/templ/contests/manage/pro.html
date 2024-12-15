@@ -43,12 +43,12 @@
             });
         };
 
-        document.querySelectorAll('button.remove').forEach(el => {
-            el.addEventListener('click', () => post_func('remove', $(el).attr('pro_id')));
-        });
-
         document.querySelectorAll('button.rechal').forEach(el => {
             el.addEventListener('click', () => post_func('rechal', $(el).attr('pro_id')));
+        });
+
+        document.querySelectorAll('button.remove').forEach(el => {
+            el.addEventListener('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $(el).attr('pro_id'), () => post_func('remove', $(el).attr('pro_id'))));
         });
 
         $("#addPro").on('click', () => post_func('add', $("#proId").val()));
@@ -108,35 +108,8 @@
                                 <td>
                                     <button class="btn btn-warning me-2 rechal"
                                         pro_id="{{ pro['pro_id'] }}">Rechallenge</button>
-
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal"
-                                        data-bs-target="#pro{{ pro['pro_id'] }}RemoveConfirmModal">Remove</button>
-
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="pro{{ pro['pro_id'] }}RemoveConfirmModal" tabindex="-1"
-                                        aria-labelledby="pro{{ pro['pro_id'] }}RemoveConfirmLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title"
-                                                        id="pro{{ pro['pro_id'] }}RemoveConfirmLabel">Remove problem
-                                                        confirm</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Are you sure to remove problem {{ pro['pro_id'] }}?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">No</button>
-                                                    <button type="button" class="btn btn-danger remove"
-                                                        pro_id="{{ pro['pro_id'] }}">Yes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-danger me-2 remove"
+                                        pro_id="{{ pro['pro_id'] }}">Remove</button>
                                 </td>
                             </tr>
                             {% end %}

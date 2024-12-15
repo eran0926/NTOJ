@@ -9,7 +9,7 @@ const newEnum = (descriptions) => {
     return Object.freeze(result);
 };
 
-var index = new function() {
+var index = new function () {
     var that = this;
     var curr_url = null;
 
@@ -17,7 +17,7 @@ var index = new function() {
     that.prev_url = null;
 
     /*
-	Reload new page
+    Reload new page
     */
     function update(force) {
         var i;
@@ -59,7 +59,7 @@ var index = new function() {
         } else {
             page = parts[4];
             req = '';
-            for (i = 4 ; i < parts.length - 1; i++) {
+            for (i = 4; i < parts.length - 1; i++) {
                 req += '/' + parts[i];
             }
 
@@ -83,28 +83,28 @@ var index = new function() {
         j_navlist.find('li').removeClass('active');
         j_navlist.find('li.' + page).addClass('active');
 
-        if (typeof(destroy) == 'function') {
+        if (typeof (destroy) == 'function') {
             destroy();
         }
 
-        cont_defer.done(function(res) {
-            j_cont.html(res).ready(function() {
+        cont_defer.done(function (res) {
+            j_cont.html(res).ready(function () {
                 var defer;
 
-                if (typeof(init) == 'function') {
+                if (typeof (init) == 'function') {
                     init();
                 }
 
                 defer = Array();
-                j_cont.find('link').each(function(i, e) {
+                j_cont.find('link').each(function (i, e) {
                     defer[i] = $.Deferred();
 
-                    $(e).on('load', function() {
+                    $(e).on('load', function () {
                         defer[i].resolve();
                     });
                 });
 
-                $.when.apply($, defer).done(function() {
+                $.when.apply($, defer).done(function () {
                     j_cont.stop().fadeIn(100);
                 });
             });
@@ -113,17 +113,17 @@ var index = new function() {
         });
 
         $(window).scrollTop(0);
-        $.get('/oj/be' + req, args, function(res) {
+        $.get('/oj/be' + req, args, function (res) {
             cont_defer.resolve(res);
         });
     }
 
-    that.init = function() {
+    that.init = function () {
         var j_navlist = $('#index-navlist');
         var acct_id;
         var contest_id;
 
-        $(document).on('click', 'a', function(e) {
+        $(document).on('click', 'a', function (e) {
             let cur_href = location.href;
 
             let href = $(this).attr('href');
@@ -147,7 +147,7 @@ var index = new function() {
             return false;
         });
 
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             let idx;
             let j_next;
 
@@ -166,14 +166,14 @@ var index = new function() {
             }
         });
 
-        $(window).on('popstate', function(a) {
+        $(window).on('popstate', function (a) {
             update(false);
         });
 
-        j_navlist.find('li.leave').on('click', function(e) {
+        j_navlist.find('li.leave').on('click', function (e) {
             $.post('/oj/be/sign', {
                 'reqtype': 'signout',
-            }, function(res) {
+            }, function (res) {
                 location.href = '/oj/sign/';
             });
         });
@@ -190,16 +190,16 @@ var index = new function() {
         update(false);
     };
 
-    that.go = function(url) {
+    that.go = function (url) {
         window.history.pushState(null, document.title, url);
         update(false);
     };
 
-    that.reload = function() {
+    that.reload = function () {
         update(true);
     };
 
-    that.create_progress_bar = function(title) {
+    that.create_progress_bar = function (title) {
         let progressbar_html = `
         <div class="modal fade" id="indexProgressBarDialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -240,7 +240,7 @@ var index = new function() {
         });
     };
 
-    that.update_progress_bar_progress = function(prog) {
+    that.update_progress_bar_progress = function (prog) {
         if (isNaN(parseInt(prog))) {
             return;
         }
@@ -257,7 +257,7 @@ var index = new function() {
         progressbar.querySelector('.progress-bar').style.width = `${prog}%`;
     }
 
-    that.update_progress_bar_title = function(title) {
+    that.update_progress_bar_title = function (title) {
         let progressbar = document.getElementById('indexProgressBarDialog');
         if (progressbar == null) {
             console.error('progress bar is null');
@@ -285,7 +285,7 @@ var index = new function() {
         info: 'info',
     });
 
-    that.show_notify_dialog = function(msg, dialog_type) {
+    that.show_notify_dialog = function (msg, dialog_type) {
         let title = '';
         switch (dialog_type) {
             case this.DIALOG_TYPE.error:
@@ -335,7 +335,46 @@ var index = new function() {
         });
     };
 
-    $.fn.print = function(msg, succ) {
+    that.show_confirm_dialog = function (msg, confirm_callback) {
+        let title = 'Confirm?';
+
+        // inject html to <body>
+        let dialog_html = `
+        <div class="modal fade" id="indexConfirmDialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">${title}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            ${msg}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
+                <button type="button" class="btn btn-danger" id="confirmBtn" data-bs-dismiss="modal">Confirm</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('afterbegin', dialog_html);
+        let dialog = document.getElementById('indexConfirmDialog');
+
+        document.getElementById('confirmBtn').addEventListener('click', confirm_callback)
+
+        // show modal
+        let dialog_modal = new bootstrap.Modal(dialog);
+        dialog_modal.show();
+
+        // add a cleanup callback function when modal closed
+        dialog.addEventListener('hidden.bs.modal', () => {
+            dialog_modal.dispose();
+            dialog.remove();
+        });
+    };
+
+    $.fn.print = function (msg, succ) {
         let j_e = this;
 
         j_e.text(msg);
@@ -353,23 +392,23 @@ var index = new function() {
         }
         j_e.css('opacity', '1');
 
-        j_e.attr('timer', setTimeout(function() {
+        j_e.attr('timer', setTimeout(function () {
             j_e.attr('timer', null);
             j_e.css('opacity', '0');
         }, 3000));
     };
 
-    that.get_ws = function(ws_url) {
+    that.get_ws = function (ws_url) {
         let ws_link = '';
         if (location.protocol !== 'https:') {
             ws_link = `ws://${location.host}/oj/be/${ws_url}`;
         } else {
             ws_link = `wss://${location.host}/oj/be/${ws_url}`;
         }
-	    return new WebSocket(ws_link);
+        return new WebSocket(ws_link);
     };
 
-    that.unescape_html = function(html) {
+    that.unescape_html = function (html) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         return doc.documentElement.textContent;
