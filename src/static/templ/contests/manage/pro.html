@@ -111,20 +111,22 @@
 
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal"
-                                        data-bs-target="#pro{{ pro['pro_id'] }}ConfirmModalLabel">Remove</button>
+                                        data-bs-target="#pro{{ pro['pro_id'] }}RemoveConfirmModal">Remove</button>
 
                                     <!-- Modal -->
-                                    <div class="modal fade" id="#pro{{ pro['pro_id'] }}ConfirmModalLabel" tabindex="-1"
-                                        aria-labelledby="#pro{{ pro['pro_id'] }}ConfirmModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="pro{{ pro['pro_id'] }}RemoveConfirmModal" tabindex="-1"
+                                        aria-labelledby="pro{{ pro['pro_id'] }}RemoveConfirmLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+                                                    <h5 class="modal-title"
+                                                        id="pro{{ pro['pro_id'] }}RemoveConfirmLabel">Remove problem
+                                                        confirm</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Are you sure to remove this problem?
+                                                    Are you sure to remove problem {{ pro['pro_id'] }}?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
