@@ -52,9 +52,9 @@
         });
 
         $("#addPro").on('click', () => post_func('add', $("#proId").val()));
-        $("#removePro").on('click', () => post_func('remove', $("#proId").val()));
+        $("#removePro").on('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $("#proId").val(), () => post_func('remove', $("#proId").val())));
         $("#addProList").on('click', () => post_func('multi_add', $("#proList").val()));
-        $("#removeProList").on('click', () => post_func('multi_remove', $("#proList").val()));
+        $("#removeProList").on('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $("#proList").val(), () => post_func('remove', $("#proList").val())));
     }
 </script>
 {% end %}
