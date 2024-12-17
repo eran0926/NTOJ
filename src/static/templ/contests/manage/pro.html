@@ -42,19 +42,19 @@
 				}
 			});
 		};
-	
-		document.querySelectorAll('button.remove').forEach(el => {
-			el.addEventListener('click', () => post_func('remove', $(el).attr('pro_id')));
-		});
 		
 		document.querySelectorAll('button.rechal').forEach(el => {
 			el.addEventListener('click', () => post_func('rechal', $(el).attr('pro_id')));
 		});
+	
+		document.querySelectorAll('button.remove').forEach(el => {
+			el.addEventListener('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $(el).attr('pro_id'), () => post_func('remove', $(el).attr('pro_id'))));
+		});
 
 		$("#addPro").on('click', () => post_func('add', $("#proId").val()));
-		$("#removePro").on('click', () => post_func('remove', $("#proId").val()));
-		$("#addProList").on('click', () => post_func('multi_add', $("#proList").val()));
-		$("#removeProList").on('click', () => post_func('multi_remove', $("#proList").val()));
+        $("#removePro").on('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $("#proId").val(), () => post_func('remove', $("#proId").val())));
+        $("#addProList").on('click', () => post_func('multi_add', $("#proList").val()));
+        $("#removeProList").on('click', () => index.show_confirm_dialog('Are you sure to remove problem ' + $("#proList").val(), () => post_func('multi_remove', $("#proList").val())));
     }
 </script>
 {% end %}
