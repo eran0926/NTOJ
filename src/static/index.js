@@ -335,6 +335,45 @@ var index = new function() {
         });
     };
 
+    that.show_confirm_dialog = function(msg, confirm_callback) {
+        let title = 'Confirm?';
+
+        // inject html to <body>
+        let dialog_html = `
+        <div class="modal fade" id="indexConfirmDialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">${title}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            ${msg}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
+                <button type="button" class="btn btn-danger" id="confirmBtn" data-bs-dismiss="modal">Confirm</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('afterbegin', dialog_html);
+        let dialog = document.getElementById('indexConfirmDialog');
+
+        document.getElementById('confirmBtn').addEventListener('click', confirm_callback)
+
+        // show modal
+        let dialog_modal = new bootstrap.Modal(dialog);
+        dialog_modal.show();
+
+        // add a cleanup callback function when modal closed
+        dialog.addEventListener('hidden.bs.modal', () => {
+            dialog_modal.dispose();
+            dialog.remove();
+        });
+    };
+
     $.fn.print = function(msg, succ) {
         let j_e = this;
 
